@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KAY UNIVERSE — Jelajahi Alam Semesta</title>
+<style>
+:root{--bg:#030711;--panel:rgba(7,15,32,.84);--line:rgba(117,176,255,.22);--blue:#59c7ff;--muted:#9db1d1;--white:#eef6ff}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--white);font-family:Inter,system-ui,Segoe UI,Arial,sans-serif}
+body{background:radial-gradient(ellipse at 50% 48%,#10224a 0,#060d20 38%,#02040a 78%)}
+#space{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:grab;transition:filter .35s ease}#space:active{cursor:grabbing}
+header{position:absolute;top:0;left:0;right:0;height:76px;display:flex;align-items:center;gap:20px;padding:0 24px;background:linear-gradient(180deg,rgba(2,5,13,.94),rgba(2,5,13,.25));z-index:3}
+.brand{display:flex;align-items:center;gap:12px;min-width:250px}.brand-mark{font-size:30px;color:#8b9dff;text-shadow:0 0 18px #617cff}.brand strong{letter-spacing:2px;font-size:16px}.brand small{display:block;color:var(--muted);font-size:11px;margin-top:4px}
+nav{display:flex;gap:6px;margin:auto}nav button,.icon-btn,.zoom-btn,.reset-btn{color:#c5d6f2;background:rgba(12,24,47,.65);border:1px solid var(--line);border-radius:22px;padding:10px 15px;cursor:pointer;transition:.2s}button:hover{border-color:var(--blue)!important;color:white!important;box-shadow:0 0 16px #3caeff20}
+.search{width:min(280px,23vw);border:1px solid var(--line);background:#071022bd;border-radius:24px;padding:11px 15px;color:white;outline:none}
+.sidebar{position:absolute;left:20px;top:98px;z-index:2;width:170px;display:grid;gap:7px}.side-btn{padding:12px 13px;text-align:left;color:#b3c5e1;background:transparent;border:1px solid transparent;border-radius:13px;cursor:pointer}.side-btn.active{background:linear-gradient(90deg,#0b3355,#08182e);border-color:#28669a;color:#fff}
+.bottom-left{position:absolute;bottom:22px;left:22px;z-index:2;width:255px;padding:17px;background:var(--panel);border:1px solid var(--line);border-radius:18px;backdrop-filter:blur(14px)}
+.small-muted{font-size:11px;color:var(--muted)}.zoom-row{display:flex;align-items:center;gap:9px;margin-top:14px}.zoom-btn{padding:6px 11px}.zoom-row input{min-width:0;width:100%;accent-color:var(--blue)}
+.details{position:absolute;right:20px;top:96px;bottom:115px;width:310px;z-index:2;overflow:auto;padding:19px;background:linear-gradient(160deg,rgba(5,13,28,.94),rgba(3,8,18,.88));border:1px solid var(--line);border-radius:20px;backdrop-filter:blur(18px);box-shadow:0 18px 70px #0008}
+.kicker{font-size:10px;letter-spacing:2px;color:var(--blue);text-transform:uppercase}.details h1{font-size:27px;margin:7px 0 3px}.subtitle{font-size:12px;color:#b4c9e9;margin-bottom:14px}
+.planet-image{height:155px;border-radius:14px;border:1px solid #23415f;background:radial-gradient(circle at 50% 50%,#133d76,#030817 70%);display:flex;align-items:center;justify-content:center;overflow:hidden;margin-bottom:17px}
+.planet-image .emoji{font-size:105px;filter:drop-shadow(0 0 24px #399bff77);animation:float 5s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-5px) rotate(4deg)}}
+.details h3{font-size:13px;margin:16px 0 9px}.facts{display:grid;grid-template-columns:1fr 1fr;gap:10px 8px;font-size:11px}.facts span{color:#8fa6c8}.facts b{font-weight:500;text-align:right}.fact-text{font-size:12px;line-height:1.65;color:#b4c5df}
+.outline-action{width:100%;border:1px solid #168ed1;border-radius:22px;padding:12px;background:#061c30;color:#68ceff;cursor:pointer;margin-top:13px}
+.planet-dock{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);z-index:2;display:flex;align-items:center;gap:8px;padding:10px;background:rgba(3,9,20,.83);border:1px solid var(--line);border-radius:22px;backdrop-filter:blur(15px);max-width:calc(100vw - 320px);overflow-x:auto}
+.planet-chip{min-width:69px;padding:8px 7px;text-align:center;border-radius:15px;border:1px solid transparent;background:transparent;color:#c6d5eb;cursor:pointer;font-size:10px}.planet-chip .emoji{display:block;font-size:27px;margin-bottom:6px;filter:drop-shadow(0 0 8px #8bcaff55)}.planet-chip.active{border-color:#45caff;background:#0c2742}
+.hint{position:absolute;left:205px;top:106px;color:#9fb5d4;font-size:11px;z-index:1;background:#050b18a8;padding:9px 12px;border:1px solid #1c3656;border-radius:12px}
+.toast{position:absolute;top:85px;left:50%;transform:translateX(-50%);z-index:5;padding:9px 15px;border:1px solid #3a8fbe;background:#071b2beF;border-radius:20px;color:#bdeaff;font-size:12px;opacity:0;pointer-events:none;transition:.25s}.toast.show{opacity:1}
+@media(max-width:900px){header{padding:0 12px;height:62px;gap:10px}.brand{min-width:auto}.brand strong{font-size:12px}.brand small,nav,.sidebar,.hint{display:none}.search{margin-left:auto;width:42vw}.details{top:auto;bottom:100px;right:10px;width:46vw;max-height:48vh;padding:13px}.details h1{font-size:21px}.planet-image{height:95px}.planet-image .emoji{font-size:70px}.facts{grid-template-columns:1fr 1fr}.bottom-left{left:10px;bottom:100px;width:43vw;padding:12px}.planet-dock{bottom:10px;max-width:calc(100vw - 16px);left:8px;right:8px;transform:none;justify-content:flex-start}.planet-chip{min-width:59px}.planet-chip .emoji{font-size:23px}}
+@media(max-width:520px){.details{width:calc(100vw - 20px);bottom:91px;right:10px;max-height:42vh}.bottom-left{display:none}.planet-dock{gap:2px}.planet-chip{min-width:53px;padding:7px 4px}.search{width:47vw;font-size:11px}.brand-mark{font-size:24px}}
+</style>
+</head>
+<body>
+<canvas id="space"></canvas>
+<header>
+  <div class="brand"><div class="brand-mark">✧</div><div><strong>KAY UNIVERSE</strong><small>Jelajahi yang tak terbatas</small></div></div>
+  <nav><button onclick="setView('Tata Surya')">Beranda</button><button onclick="setView('Galaksi')">Galaksi</button><button onclick="setView('Bintang')">Bintang</button><button onclick="setView('Planet')">Planet</button></nav>
+  <input id="search" class="search" placeholder="⌕  Cari planet atau bintang..." list="suggestions"><datalist id="suggestions"></datalist>
+  <button class="icon-btn" title="Acak objek" onclick="randomObject()">✦</button>
+</header>
+<aside class="sidebar">
+ <button class="side-btn active" onclick="setView('Tata Surya',this)">☼　Sistem Tata Surya</button>
+ <button class="side-btn" onclick="setView('Galaksi',this)">◎　Galaksi</button>
+ <button class="side-btn" onclick="setView('Bintang',this)">✧　Bintang</button>
+ <button class="side-btn" onclick="setView('Planet',this)">◉　Planet</button>
+ <button class="side-btn" onclick="setView('Eksoplanet',this)">◌　Eksoplanet</button>
+ <button class="side-btn" onclick="setView('Nebula',this)">✺　Nebula</button>
+ <button class="side-btn" onclick="setView('Lubang Hitam',this)">◉　Lubang Hitam</button>
+</aside>
+<div class="hint">GESER untuk menggerakkan · Scroll untuk zoom · Klik objek untuk detail</div>
+<div id="toast" class="toast">Objek dipilih</div>
+<section class="bottom-left">
+ <div style="font-size:13px">✺　<strong id="viewName">Tata Surya</strong></div>
+ <div class="small-muted" style="margin:7px 0">8 planet · Matahari · Sabuk asteroid</div>
+ <div class="zoom-row"><button class="zoom-btn" onclick="zoomBy(.8)">−</button><input id="zoom" type="range" min=".55" max="2.8" step=".01" value="1"><button class="zoom-btn" onclick="zoomBy(1.25)">+</button><button class="reset-btn" onclick="resetView()">Reset</button></div>
+</section>
+<aside class="details">
+ <div class="kicker">Ensiklopedia kosmik</div>
+ <h1 id="objectName">Bumi</h1><div class="subtitle" id="objectSubtitle">Planet ketiga dari Matahari</div>
+ <div class="planet-image" id="planetImage"><div class="emoji" id="objectEmoji">🌍</div></div>
+ <h3>Informasi umum</h3><div class="facts" id="facts"></div>
+ <h3>Fakta menarik</h3><p class="fact-text" id="objectFact"></p>
+ <button class="outline-action" onclick="focusSelected()">⌕　Fokus ke objek ini　↗</button>
+</aside>
+<div class="planet-dock" id="dock"></div>
+<script>
+const objects=[
+{name:'Matahari',type:'Bintang',emoji:'☀️',subtitle:'Bintang pusat Tata Surya',diameter:'1,39 juta km',distance:'0 km (pusat sistem)',temp:'±5.500°C di permukaan',day:'±27 hari',year:'±225 juta tahun di orbit galaksi',moons:'—',mass:'1,989 × 10³⁰ kg',fact:'Matahari menampung sekitar 99,86% massa seluruh Tata Surya. Energinya berasal dari fusi nuklir di inti.' ,color:'#ffb02e'},
+{name:'Merkurius',type:'Planet',emoji:'🌑',subtitle:'Planet terdekat dari Matahari',diameter:'4.879 km',distance:'57,9 juta km',temp:'−180 hingga 430°C',day:'58,6 hari Bumi',year:'88 hari Bumi',moons:'0',mass:'3,30 × 10²³ kg',fact:'Merkurius hampir tidak memiliki atmosfer tebal, sehingga suhu siang dan malamnya sangat berbeda.',color:'#aaa9a4'},
+{name:'Venus',type:'Planet',emoji:'🟠',subtitle:'Planet kedua dari Matahari',diameter:'12.104 km',distance:'108,2 juta km',temp:'±465°C',day:'243 hari Bumi',year:'225 hari Bumi',moons:'0',mass:'4,87 × 10²⁴ kg',fact:'Venus adalah planet terpanas di Tata Surya karena atmosfernya yang sangat tebal memerangkap panas.',color:'#e9a35b'},
+{name:'Bumi',type:'Planet',emoji:'🌍',subtitle:'Planet ketiga dari Matahari',diameter:'12.742 km',distance:'149,6 juta km',temp:'Rata-rata ±15°C',day:'24 jam',year:'365,25 hari',moons:'1 (Bulan)',mass:'5,972 × 10²⁴ kg',fact:'Bumi diketahui memiliki air cair melimpah di permukaan dan kehidupan. Sekitar 71% permukaannya tertutup air.',color:'#299eff'},
+{name:'Mars',type:'Planet',emoji:'🔴',subtitle:'Planet merah',diameter:'6.779 km',distance:'227,9 juta km',temp:'Rata-rata −65°C',day:'24 jam 37 menit',year:'687 hari Bumi',moons:'2',mass:'6,42 × 10²³ kg',fact:'Mars memiliki gunung berapi Olympus Mons, salah satu gunung berapi terbesar yang diketahui di Tata Surya.',color:'#e45e42'},
+{name:'Jupiter',type:'Planet',emoji:'🪐',subtitle:'Planet terbesar di Tata Surya',diameter:'139.820 km',distance:'778,6 juta km',temp:'±−110°C di puncak awan',day:'±9 jam 56 menit',year:'11,86 tahun Bumi',moons:'Banyak; jumlah terkonfirmasi berubah',mass:'1,898 × 10²⁷ kg',fact:'Bintik Merah Besar Jupiter adalah badai raksasa yang telah diamati selama berabad-abad.',color:'#c9946c'},
+{name:'Saturnus',type:'Planet',emoji:'🪐',subtitle:'Planet bercincin yang terkenal',diameter:'116.460 km',distance:'1,43 miliar km',temp:'±−140°C di puncak awan',day:'±10,7 jam',year:'29,4 tahun Bumi',moons:'Banyak',mass:'5,68 × 10²⁶ kg',fact:'Cincin Saturnus terutama tersusun dari partikel es, debu, dan batuan yang mengorbit planet.',color:'#d8bf91'},
+{name:'Uranus',type:'Planet',emoji:'🔵',subtitle:'Raksasa es ketujuh dari Matahari',diameter:'50.724 km',distance:'2,87 miliar km',temp:'±−195°C',day:'±17 jam 14 menit',year:'84 tahun Bumi',moons:'Banyak',mass:'8,68 × 10²⁵ kg',fact:'Sumbu rotasi Uranus sangat miring, sehingga planet ini tampak berputar seperti menggelinding mengelilingi Matahari.',color:'#6ccedc'},
+{name:'Neptunus',type:'Planet',emoji:'🔵',subtitle:'Planet terjauh dari Matahari',diameter:'49.244 km',distance:'4,5 miliar km',temp:'±−200°C',day:'±16 jam',year:'165 tahun Bumi',moons:'Banyak',mass:'1,02 × 10²⁶ kg',fact:'Neptunus memiliki angin yang sangat cepat dan ditemukan melalui perhitungan matematika sebelum diamati langsung.',color:'#416cff'},
+{name:'Sirius',type:'Bintang',emoji:'✨',subtitle:'Bintang paling terang di langit malam kita',diameter:'±1,7 kali diameter Matahari',distance:'8,6 tahun cahaya',temp:'±9.940°C',day:'—',year:'—',moons:'—',mass:'±2 kali massa Matahari',fact:'Sirius adalah sistem bintang ganda. Cahaya yang kita lihat hari ini meninggalkan Sirius sekitar 8,6 tahun lalu.',color:'#b5d9ff'},
+{name:'Proxima Centauri',type:'Bintang',emoji:'🔴',subtitle:'Bintang terdekat setelah Matahari',diameter:'±200.000 km',distance:'4,24 tahun cahaya',temp:'±3.000°C',day:'—',year:'—',moons:'—',mass:'±0,12 massa Matahari',fact:'Proxima Centauri adalah katai merah dan memiliki setidaknya satu eksoplanet yang diketahui mengorbitnya.',color:'#ff745e'},
+{name:'Bima Sakti',type:'Galaksi',emoji:'🌌',subtitle:'Galaksi tempat Tata Surya berada',diameter:'±100.000 tahun cahaya',distance:'Kita berada di dalamnya',temp:'Beragam',day:'—',year:'Matahari mengorbit pusat galaksi',moons:'Miliaran sistem bintang',mass:'Skala galaksi',fact:'Bima Sakti diperkirakan memiliki ratusan miliar bintang. Tata Surya berada di salah satu lengan spiralnya.',color:'#8a8dff'},
+{name:'Nebula Orion',type:'Nebula',emoji:'☁️',subtitle:'Wilayah pembentukan bintang',diameter:'Puluhan tahun cahaya',distance:'±1.344 tahun cahaya',temp:'Beragam',day:'—',year:'—',moons:'—',mass:'Gas dan debu kosmik',fact:'Nebula Orion adalah wilayah gas dan debu tempat bintang-bintang baru terbentuk.',color:'#d58cff'},
+{name:'Sagittarius A*',type:'Lubang Hitam',emoji:'🕳️',subtitle:'Lubang hitam supermasif di pusat Bima Sakti',diameter:'Cakrawala peristiwa puluhan juta km',distance:'±26.000 tahun cahaya',temp:'Tidak punya suhu permukaan biasa',day:'—',year:'—',moons:'—',mass:'±4 juta massa Matahari',fact:'Sagittarius A* adalah sumber radio yang terkait dengan lubang hitam supermasif di pusat galaksi kita.',color:'#bc83ff'}
+];
+const canvas=document.getElementById('space'),ctx=canvas.getContext('2d');let W,H,dpr=1,zoom=1,panX=0,panY=0,selected=3,view='Tata Surya',stars=[],drag=null,anim=0,focusPulse=0;
+function resize(){dpr=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;canvas.width=W*dpr;canvas.height=H*dpr;canvas.style.width=W+'px';canvas.style.height=H+'px';ctx.setTransform(dpr,0,0,dpr,0,0);stars=Array.from({length:500},()=>({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.4+.15,a:Math.random()*.8+.15,p:Math.random()*6.28}));draw()}
+window.addEventListener('resize',resize);
+const orbitData=[{i:0,r:35,s:12},{i:1,r:64,s:5},{i:2,r:90,s:8},{i:3,r:120,s:9},{i:4,r:153,s:7},{i:5,r:195,s:16},{i:6,r:235,s:14},{i:7,r:274,s:11},{i:8,r:310,s:10}];
+function center(){return{x:W*.48+panX,y:H*.53+panY}}
+function drawPlanet(x,y,r,obj,glow=true){ctx.save();if(glow){let g=ctx.createRadialGradient(x,y,r*.2,x,y,r*2.5);g.addColorStop(0,obj.color+'88');g.addColorStop(1,obj.color+'00');ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y,r*2.5,0,Math.PI*2);ctx.fill()}
+let g=ctx.createRadialGradient(x-r*.4,y-r*.4,1,x,y,r*1.3);g.addColorStop(0,'#ffffff');g.addColorStop(.12,obj.color);g.addColorStop(.65,obj.color);g.addColorStop(1,'#071021');ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();
+if(obj.name==='Saturnus'||obj.name==='Jupiter'){ctx.strokeStyle=obj.name==='Saturnus'?'#e5d0a8aa':'#e8c3a088';ctx.lineWidth=Math.max(1,r*.17);ctx.beginPath();ctx.ellipse(x,y,r*1.65,r*.45,-.18,0,Math.PI*2);ctx.stroke();if(obj.name==='Saturnus'){ctx.strokeStyle='#111c2a';ctx.lineWidth=Math.max(1,r*.07);ctx.beginPath();ctx.ellipse(x,y,r*1.4,r*.34,-.18,0,Math.PI*2);ctx.stroke()}}
+ctx.restore()}
+function draw(){if(!W||!H)return;ctx.clearRect(0,0,W,H);ctx.fillStyle='#030711';ctx.fillRect(0,0,W,H);
+let neb=ctx.createRadialGradient(W*.48,H*.48,10,W*.48,H*.48,Math.max(W,H)*.68);neb.addColorStop(0,'#17295788');neb.addColorStop(.45,'#10102c55');neb.addColorStop(1,'#02040a00');ctx.fillStyle=neb;ctx.fillRect(0,0,W,H);
+for(const s of stars){let tw=.6+.4*Math.sin(anim*.03+s.p);ctx.globalAlpha=s.a*tw;ctx.fillStyle='#c9e5ff';ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fill()}ctx.globalAlpha=1;
+const c=center();ctx.save();ctx.translate(c.x,c.y);ctx.scale(zoom,zoom);
+if(view==='Tata Surya'||view==='Planet'||view==='Bintang'){
+for(let j=1;j<9;j++){ctx.strokeStyle='rgba(111,166,255,.23)';ctx.lineWidth=1/zoom;ctx.beginPath();ctx.ellipse(0,0,orbitData[j].r*1.28,orbitData[j].r*.52,-.08,0,Math.PI*2);ctx.stroke()}
+drawPlanet(0,0,12,objects[0]);orbitData.slice(1).forEach((o,k)=>{let obj=objects[k+1];let a=anim*.0015*(k%2?1:-1)+k*.84;let x=Math.cos(a)*o.r*1.28,y=Math.sin(a)*o.r*.52;drawPlanet(x,y,o.s,obj);if(selected===k+1){ctx.strokeStyle='#7de3ff';ctx.lineWidth=1.5/zoom;ctx.beginPath();ctx.arc(x,y,o.s+7,0,Math.PI*2);ctx.stroke();ctx.fillStyle='#eaf8ff';ctx.font=`${12/zoom}px system-ui`;ctx.fillText(obj.name,x+o.s+10,y-7)}})
+}else{
+let count=9;for(let i=0;i<count;i++){let x=Math.cos(i*2.4+anim*.001)* (80+i*22),y=Math.sin(i*2.4+anim*.001)*(45+i*12);let obj=objects[(selected+i)%objects.length];drawPlanet(x,y,8+(i%3)*3,obj);if(i===0){ctx.strokeStyle='#7de3ff';ctx.beginPath();ctx.arc(x,y,18,0,Math.PI*2);ctx.stroke()}}
+}
+ctx.restore();anim++;requestAnimationFrame(draw)}
+function updateDetails(){const o=objects[selected];document.getElementById('objectName').textContent=o.name;document.getElementById('objectSubtitle').textContent=o.subtitle;document.getElementById('objectEmoji').textContent=o.emoji;document.getElementById('objectFact').textContent=o.fact;document.getElementById('facts').innerHTML=[['Jenis',o.type],['Diameter',o.diameter],['Jarak',o.distance],['Suhu',o.temp],['Rotasi',o.day],['Revolusi',o.year],['Satelit',o.moons],['Massa',o.mass]].map(x=>`<span>${x[0]}</span><b>${x[1]}</b>`).join('');document.getElementById('planetImage').style.background=`radial-gradient(circle at 50% 45%,${o.color}55,#030817 72%)`;document.querySelectorAll('.planet-chip').forEach((b,i)=>b.classList.toggle('active',i===selected));showToast(o.name+' dipilih')}
+function buildDock(){const dock=document.getElementById('dock');dock.innerHTML=objects.map((o,i)=>`<button class="planet-chip ${i===selected?'active':''}" onclick="selectObject(${i})"><span class="emoji">${o.emoji}</span>${o.name}</button>`).join('');document.getElementById('suggestions').innerHTML=objects.map(o=>`<option value="${o.name}">`).join('')}
+function selectObject(i){selected=i;updateDetails();focusSelected();document.getElementById('search').value=objects[i].name}
+function focusSelected(){zoom=Math.min(2.8,Math.max(1.25,zoom*1.15));document.getElementById('zoom').value=zoom;focusPulse=1;canvas.style.filter='blur(2px) brightness(1.35)';setTimeout(()=>canvas.style.filter='blur(0px) brightness(1)',180)}
+function zoomBy(f){zoom=Math.min(2.8,Math.max(.55,zoom*f));document.getElementById('zoom').value=zoom;canvas.style.filter='blur(1.5px)';setTimeout(()=>canvas.style.filter='blur(0px)',170)}
+function resetView(){zoom=1;panX=0;panY=0;document.getElementById('zoom').value=zoom;canvas.style.filter='blur(4px)';setTimeout(()=>canvas.style.filter='blur(0)',250)}
+document.getElementById('zoom').addEventListener('input',e=>{zoom=+e.target.value;canvas.style.filter='blur(1px)';setTimeout(()=>canvas.style.filter='blur(0)',120)});
+function setView(v,btn){view=v;document.getElementById('viewName').textContent=v;document.querySelectorAll('.side-btn').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');else{let b=[...document.querySelectorAll('.side-btn')].find(b=>b.textContent.includes(v));if(b)b.classList.add('active')}if(v==='Bintang')selectObject(9);else if(v==='Galaksi')selectObject(11);else if(v==='Nebula')selectObject(12);else if(v==='Lubang Hitam')selectObject(13);else if(v==='Planet')selectObject(3);else selectObject(3)}
+function randomObject(){selectObject(Math.floor(Math.random()*objects.length))}
+function showToast(s){let t=document.getElementById('toast');t.textContent=s;t.classList.add('show');clearTimeout(showToast.t);showToast.t=setTimeout(()=>t.classList.remove('show'),1300)}
+document.getElementById('search').addEventListener('change',e=>{let i=objects.findIndex(o=>o.name.toLowerCase()===e.target.value.toLowerCase());if(i>=0)selectObject(i);else showToast('Objek belum ada di katalog')});
+canvas.addEventListener('wheel',e=>{e.preventDefault();zoomBy(e.deltaY<0?1.08:.92)},{passive:false});
+canvas.addEventListener('pointerdown',e=>{drag={x:e.clientX,y:e.clientY,px:panX,py:panY,moved:false};canvas.setPointerCapture(e.pointerId)});
+canvas.addEventListener('pointermove',e=>{if(drag){let dx=e.clientX-drag.x,dy=e.clientY-drag.y;if(Math.abs(dx)+Math.abs(dy)>4)drag.moved=true;panX=drag.px+dx;panY=drag.py+dy}});
+canvas.addEventListener('pointerup',e=>{if(drag&&!drag.moved){let c=center(),best=Infinity,bi=-1;let px=(e.clientX-c.x)/zoom,py=(e.clientY-c.y)/zoom;orbitData.slice(1).forEach((o,k)=>{let a=anim*.0015*(k%2?1:-1)+k*.84,x=Math.cos(a)*o.r*1.28,y=Math.sin(a)*o.r*.52,d=Math.hypot(px-x,py-y);if(d<best){best=d;bi=k+1}});if(best<48)selectObject(bi);else if(Math.hypot(px,py)<30)selectObject(0)}drag=null});
+buildDock();updateDetails();resize();
+</script>
+</body>
+</html>
